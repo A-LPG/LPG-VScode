@@ -47,7 +47,7 @@
 There are a number of documentation files for specific topics:
 
 
-* [Extension Settings](https://github.com/A-LPG/LPG-VScode/doc/extension-settings.md)
+* [Extension Settings](https://github.com/A-LPG/LPG-VScode/blob/main/doc/extension-settings.md)
 
 
 

@@ -290,7 +290,7 @@
 							"description": "trace rule info when code generation",
 							"enum": [
 								"none",
-								"default",
+								"conflicts",
 								"full"
 							]
 						},

@@ -215,9 +215,9 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         const basePath = path.dirname(document.fileName);
     
 
-        // In internal mode we generate files with the default target language into our .antlr folder.
+        // In internal mode we generate files with the default target language into our .lpg folder.
         // In external mode the files are generated into the given output folder (or the folder where the
-        // main grammar is). In this case we have to move the interpreter data to our .antlr folder.
+        // main grammar is). In this case we have to move the interpreter data to our .lpg folder.
         let outputDir = path.join(basePath, ".lpg");
         if (externalMode) {
             outputDir = config.outputDir as string;

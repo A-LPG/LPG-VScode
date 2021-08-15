@@ -3,12 +3,12 @@
 	"displayName": "LPG grammar syntax support",
     "description": "Language support for LPG grammar files",
 	"bugs": {
-		"url": "https://github.com/kuafuwang/LPG-VScode/issues"
+		"url": "https://github.com/A-LPG/LPG-VScode/issues"
 	},
 	"categories": [
         "Programming Languages"
     ],
-	"homepage": "https://github.com/kuafuwang/LPG-VScode/blob/master/README.md",
+	"homepage": "https://github.com/A-LPG/LPG-VScode/blob/master/README.md",
 	"keywords": [
 		"LPG",
 		"lpg"
@@ -17,7 +17,7 @@
 	"publisher": "kuafuwang",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kuafuwang/LPG-VScode"
+		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
 	"version": "0.0.9",
 	"engines": {

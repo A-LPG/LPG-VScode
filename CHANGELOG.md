@@ -7,7 +7,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Released]
 
 - Initial release
-  
+ ### 0.0.9
+* Fixed: some bug in languange server.
+* Add : add typescript in lpg generator.
+* Add : add typescript template .
 ### 0.0.7
 * Fixed: Call graph dind't work. For lack of d3 node-modules.
 * 

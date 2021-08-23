@@ -7,7 +7,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Released]
 
 - Initial release
- ### 0.0.9
+### 0.0.10
+* Add : add python3 support in lpg generator.
+* Add : add python3 target template .
+* 
+### 0.0.9
 * Fixed: some bug in languange server.
 * Add : add typescript in lpg generator.
 * Add : add typescript template .

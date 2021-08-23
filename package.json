@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -209,8 +209,7 @@
 				"lpg.generation.setting": {
 					"type": "object",
 					"default": {
-						"mode": "internal",
-						"visitor": "default"
+						"mode": "internal"
 					},
 					"description": "Settings related to parser generation",
 					"properties": {
@@ -245,6 +244,8 @@
 								"plx",
 								"plxasm",
 								"xml",
+								"python2",
+								"python3",
 								"undefined"
 							]
 						},
@@ -271,6 +272,8 @@
 								"rt_cpp",
 								"csharp",
 								"java",
+								"python2",
+								"python3",
 								"typescript"
 							]
 						},

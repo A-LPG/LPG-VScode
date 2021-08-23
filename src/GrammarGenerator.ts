@@ -161,6 +161,12 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'typescript'){
                 options.include_search_directory += path.resolve(templates_dir, 'typescript');
             }
+            else if(options.built_in_template === 'python2' ){
+                options.include_search_directory += path.resolve(templates_dir, 'python2');
+            }
+            else if(options.built_in_template === 'python3'){
+                options.include_search_directory += path.resolve(templates_dir, 'python3');
+            }
         }
 
         
@@ -185,7 +191,12 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'typescript'){
                 options.template_search_directory += path.resolve(templates_dir, 'typescript');
             }
-            
+            else if(options.built_in_template === 'python2' ){
+                options.template_search_directory += path.resolve(templates_dir, 'python2');
+            }
+            else if(options.built_in_template === 'python3'){
+                options.template_search_directory += path.resolve(templates_dir, 'python3');
+            }
         }
     }
 

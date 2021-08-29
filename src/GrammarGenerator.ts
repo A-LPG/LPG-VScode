@@ -167,6 +167,9 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'python3'){
                 options.include_search_directory += path.resolve(templates_dir, 'python3');
             }
+            else if(options.built_in_template === 'dart'){
+                options.include_search_directory += path.resolve(templates_dir, 'dart');
+            }
         }
 
         
@@ -196,6 +199,9 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             }
             else if(options.built_in_template === 'python3'){
                 options.template_search_directory += path.resolve(templates_dir, 'python3');
+            }
+            else if(options.built_in_template === 'dart'){
+                options.template_search_directory += path.resolve(templates_dir, 'dart');
             }
         }
     }

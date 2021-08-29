@@ -7,6 +7,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Released]
 
 - Initial release
+
+### 0.0.11
+* Add : add python2 support  [ in lpg generator].
+* Add : add python2 target template .
+* Add : add dart support   [ in lpg generator].
+* Add : add dart target template .
+* Fixed: enter method in csharp targe isn't abstract method, remove the override modifier.[lpg generator]
+* 
 ### 0.0.10
 * Add : add python3 support in lpg generator.
 * Add : add python3 target template .

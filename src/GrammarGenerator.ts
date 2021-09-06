@@ -170,6 +170,9 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'dart'){
                 options.include_search_directory += path.resolve(templates_dir, 'dart');
             }
+            else if(options.built_in_template === 'go'){
+                options.include_search_directory += path.resolve(templates_dir, 'go');
+            }
         }
 
         
@@ -202,6 +205,9 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             }
             else if(options.built_in_template === 'dart'){
                 options.template_search_directory += path.resolve(templates_dir, 'dart');
+            }
+            else if(options.built_in_template === 'go'){
+                options.template_search_directory += path.resolve(templates_dir, 'go');
             }
         }
     }

@@ -7,7 +7,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Released]
 
 - Initial release
-
+### 0.0.12
+* Add : add go support  [ in lpg generator].
+* Add : add go target template .
+* Fixed: In typescript target, An interface declaration cannot have the "implements" clause. 
+* Fixed: Generate  the wrong code when visitor is default . It hanpen on  python target,dart target
+* Change: In dart target ,change the hierarchy model to avoid quadratic behavior. It's a issue in dart dart-lang/sdk#47024
+* Change: In python2/3 target ,change the hierarchy model to avoid  the typeError Cannot create a consistent method resolution order (MRO)
+* Fixed:  When visitor is preorder , the method which name  endVisit always to trow error. It happen on java target,csharp target, dart target,python2/python3 taget
+* 
 ### 0.0.11
 * Add : add python2 support  [ in lpg generator].
 * Add : add python2 target template .

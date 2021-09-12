@@ -5,8 +5,10 @@ All notable changes to the "LPG-VScode" extension will be documented in this fil
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Released]
-
-- Initial release
+### 0.0.13
+* Add : Using switch instead of if statement in Visitor.  [ in lpg generator].
+* Chane template of go target to handle all the err .
+* 
 ### 0.0.12
 * Add : add go support  [ in lpg generator].
 * Add : add go target template .
@@ -46,4 +48,5 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * fixed lpg language server bugs.
 ### 0.0.3
 * fixed lpg generator bugs.
-### 0.0.2
+
+  

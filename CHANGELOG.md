@@ -5,6 +5,10 @@ All notable changes to the "LPG-VScode" extension will be documented in this fil
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Released]
+### 0.0.14
+* Fixed: Segment fault when there are mutilple macro in Headers section [ in lpg generator].
+* Add : Add linux version lpg generator.
+* 
 ### 0.0.13
 * Add : Using switch instead of if statement in Visitor.  [ in lpg generator].
 * Chane template of go target to handle all the err .

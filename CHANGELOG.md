@@ -5,6 +5,9 @@ All notable changes to the "LPG-VScode" extension will be documented in this fil
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Released]
+### 0.0.15
+* Fixed: Get invalid generated code by having two conflicting function definitions when option -> glr is true [ in lpg generator].
+* 
 ### 0.0.14
 * Fixed: Segment fault when there are mutilple macro in Headers section [ in lpg generator].
 * Add : Add linux version lpg generator.

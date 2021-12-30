@@ -252,3 +252,51 @@ export function isString(s :unknown): s is string {
     };
     return params;
 }
+
+export function isExecutable(file: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        fs.access(file, fs.constants.X_OK, (err) => {
+            if (err) {
+                resolve(false);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+/** Test whether a file exists */
+export function checkFileExists(filePath: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        fs.stat(filePath, (err, stats) => {
+            if (stats && stats.isFile()) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+export async function allowExecution(file: string): Promise<void> {
+    if (process.platform !== 'win32') {
+        const exists: boolean = await checkFileExists(file);
+        if (exists) {
+            const isExec: boolean = await isExecutable(file);
+            if (!isExec) {
+                await chmodAsync(file, '755');
+            }
+        } else {
+            window.showErrorMessage("Warning: Expected file "+ file +" is missing.", );
+        }
+    }
+}
+
+export async function chmodAsync(path: fs.PathLike, mode: fs.Mode): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        fs.chmod(path, mode, (err: NodeJS.ErrnoException | null) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve();
+        });
+    });
+}

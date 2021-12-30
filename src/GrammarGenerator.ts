@@ -8,9 +8,10 @@ import { window } from "vscode";
 import { ProgressIndicator } from "./ProgressIndicator";
 import { OutputInfoCollector } from "./extension";
 import { Constant } from "./commands";
-import { isLinux, isWindows } from "./Utils";
+import { allowExecution, isLinux, isWindows } from "./Utils";
 import glob = require("glob");
 import { settings } from "cluster";
+import { PlatformInformation } from "./platform";
 
 
 const expandHomeDir = require("expand-home-dir");
@@ -413,4 +414,22 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             resolve(outputList); // Treat this as non-grammar output (e.g. Java exception).
         });
     });
+}
+
+
+export async function makeOfflineBinariesExecutable(): Promise<void> {
+    const promises: Thenable<void>[] = [];
+    const path_list : string[] =[];
+    let _path = get_lpg_generator_path()[0];
+    if(_path.length){
+        path_list.push(_path);
+    }
+    _path = get_server_path()[0];
+    if(_path.length){
+        path_list.push(_path);
+    }
+    path_list.forEach( p => {
+        promises.push(allowExecution(p))
+    });
+    await Promise.all(promises);
 }

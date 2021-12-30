@@ -32,7 +32,7 @@ import { TextEditor } from 'vscode';
 import * as analysisAction from  './Analysis';
 import { ProgressIndicator } from './ProgressIndicator';
 import { TextEditorEdit } from 'vscode';
-import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, regenerateParser } from './GrammarGenerator';
+import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser } from './GrammarGenerator';
 
 
 
@@ -84,6 +84,7 @@ async function openLogs() {
 	await commands.executeCommand(Commands.OPEN_CLIENT_LOG, ViewColumn.One);
 	await commands.executeCommand(Commands.OPEN_SERVER_LOG, ViewColumn.Two);
 }
+
 
 function openLogFile(logFile : string, openingFailureWarning: string, column: ViewColumn = ViewColumn.Active): Thenable<boolean> {
 	if (!fs.existsSync(logFile)) {
@@ -389,7 +390,7 @@ function  start_lpg(context: vscode.ExtensionContext) {
 
 	setTimeout(start_lpg, 1000,context);
 }
-export function activate(context: vscode.ExtensionContext)
+export async function activate(context: vscode.ExtensionContext)
 {
 	progress = new ProgressIndicator();
     let storagePath = context.storagePath;
@@ -409,7 +410,7 @@ export function activate(context: vscode.ExtensionContext)
         }
     }
     outputChannel = new OutputInfoCollector(extensionName);
-   
+	await makeOfflineBinariesExecutable();
    // Register commands here to make it available even when the language client fails
    context.subscriptions.push(commands.registerCommand(Commands.OPEN_SERVER_LOG, (column: ViewColumn) => openServerLogFile(workspacePath, column)));
 
@@ -431,3 +432,4 @@ export function deactivate(): Thenable<void> | undefined
     }
     return languageClient.stop();
 }
+

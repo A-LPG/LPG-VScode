@@ -5,6 +5,9 @@ All notable changes to the "LPG-VScode" extension will be documented in this fil
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Released]
+### 0.0.16
+* Add: support windows/linux/mac platform.
+* Fixed: make offline binary executable in linux or mac platform.
 ### 0.0.15
 * Fixed: Get invalid generated code by having two conflicting function definitions when option -> glr is true [ in lpg generator].
 * 

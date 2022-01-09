@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -288,7 +288,8 @@
 							"enum": [
 								"none",
 								"default",
-								"preorder"
+								"preorder",
+								"all"
 							]
 						},
 						"trace": {

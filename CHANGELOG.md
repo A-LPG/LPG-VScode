@@ -5,6 +5,12 @@ All notable changes to the "LPG-VScode" extension will be documented in this fil
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Released]
+
+### 0.0.17
+* Add: Add ruleIndex to rule class on all  the target.
+* Add:Add rule name table in  table when generate ast.
+* Support default and preorder visitor both on all  the target.
+  
 ### 0.0.16
 * Add: support windows/linux/mac platform.
 * Fixed: make offline binary executable in linux or mac platform.

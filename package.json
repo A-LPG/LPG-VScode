@@ -248,6 +248,7 @@
 								"python3",
 								"dart",
 								"go",
+								"rust",
 								"undefined"
 							]
 						},
@@ -278,7 +279,8 @@
 								"python3",
 								"typescript",
 								"dart",
-								"go"
+								"go",
+								"rust"
 							]
 						},
 						"visitor": {

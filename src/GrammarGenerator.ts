@@ -20,7 +20,7 @@ const expandHomeDir = require("expand-home-dir");
  */
 
  export interface GenerationOptions {
- 
+
     // The folder in which to run the generation process. Should be an absolute path for predictable results.
     // Used internally only.
     baseDir?: string;
@@ -66,7 +66,7 @@ const expandHomeDir = require("expand-home-dir");
     additionalParameters?: string;
 }
 export interface GenerationSettingOptions {
- 
+
     // Search template  path for the LPG tool.
     template_search_directory?: string;
 
@@ -119,7 +119,7 @@ export function GetGenerationSettingOptions():GenerationSettingOptions{
         verbose  : option.verbose,
         additionalParameters : option.additionalParameters
     };
-   
+
     return settings;
 }
 export function GetGenerationOptions(basePath: string | undefined, outputDir : string | undefined):GenerationOptions
@@ -131,8 +131,8 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         include_search_directory: config.use_define_include_directory as string,
         outputDir,
         built_in_template : config.built_in_template as string,
-        language : config.language as string,   
-        package : config.package as string,    
+        language : config.language as string,
+        package : config.package as string,
         visitor : config.visitor as string,
         trace: config.trace as string,
         quiet: config.quiet as boolean,
@@ -140,7 +140,7 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         alternativeExe: config.alternativeExe as string,
         additionalParameters: config.additionalParameters as string,
     };
-    
+
     if(options.built_in_template){
         if(!options.include_search_directory){
             options.include_search_directory = "";
@@ -174,9 +174,12 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'go'){
                 options.include_search_directory += path.resolve(templates_dir, 'go');
             }
+            else if(options.built_in_template === 'rust'){
+                options.include_search_directory += path.resolve(templates_dir, 'rust');
+            }
         }
 
-        
+
         if(!options.template_search_directory){
             options.template_search_directory="";
         }
@@ -210,10 +213,30 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             else if(options.built_in_template === 'go'){
                 options.template_search_directory += path.resolve(templates_dir, 'go');
             }
+            else if(options.built_in_template === 'rust'){
+                options.template_search_directory += path.resolve(templates_dir, 'rust');
+            }
         }
     }
 
     return options;
+}
+
+function resolveTargetLanguage(options: GenerationOptions): string {
+    const mapLanguage = (raw: string): string => {
+        switch (raw) {
+            case "c++": return "cpp";
+            case "undefined": return "";
+            default: return raw;
+        }
+    };
+    if (options.language && options.language !== "undefined") {
+        return mapLanguage(options.language);
+    }
+    if (options.built_in_template) {
+        return mapLanguage(options.built_in_template);
+    }
+    return "java";
 }
     /**
      * For certain services we have to (re)generate files from grammars in the background:
@@ -224,7 +247,7 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
      */
    export  function regenerateParser(document: TextDocument,
         progress : ProgressIndicator,
-        outputChannel:OutputInfoCollector): void 
+        outputChannel:OutputInfoCollector): void
         {
         const config = workspace.getConfiguration(Constant.LPG_GENERATION);
         if (config.mode === "none") {
@@ -232,12 +255,12 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         }
 
         const grammarFileName = document.uri.fsPath;
-    
+
         const externalMode = config.mode === "external";
-         
+
         progress.startAnimation();
         const basePath = path.dirname(document.fileName);
-    
+
 
         // In internal mode we generate files with the default target language into our .lpg folder.
         // In external mode the files are generated into the given output folder (or the folder where the
@@ -262,13 +285,13 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
 
             return;
         }
-      
+
         const options= GetGenerationOptions(basePath,outputDir);
-        
+
         const result = generate(grammarFileName, options,outputChannel);
         result.then((out_strings: string[]) => {
             for (const str of out_strings) {
-                outputChannel.appendLine(str)   
+                outputChannel.appendLine(str)
             }
             progress.stopAnimation();
             window.showInformationMessage("Generate parser for " + grammarFileName + " has done.")
@@ -276,24 +299,24 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             progress.stopAnimation();
             outputChannel.appendLine(reason);
             outputChannel.show(true);
-            window.showInformationMessage("Generate parser for " + grammarFileName + " failed, reson :"+ reason);
+            window.showErrorMessage("Generate parser for " + grammarFileName + " failed: " + reason);
         });
     }
-    
+
     export function get_server_path(): string[]
     {
         let exeHome: string ;
         if (isWindows) {
             exeHome = path.resolve(__dirname, '../server/win');
-        
+
         } else if(isLinux) {
             exeHome =   path.resolve(__dirname, '../server/linux');
         }
         else{
             exeHome =  path.resolve(__dirname, '../server/mac');
         }
-        
-        const launchersFound: Array<string> = glob.sync('**/LPG-language-server*', 
+
+        const launchersFound: Array<string> = glob.sync('**/LPG-language-server*',
         { cwd: exeHome });
         if (launchersFound.length) {
             return [(path.resolve(exeHome, launchersFound[0])),exeHome] ;
@@ -306,15 +329,15 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         let exeHome: string ;
         if (isWindows) {
             exeHome = path.resolve(__dirname, '../server/win');
-        
+
         } else if(isLinux) {
             exeHome =   path.resolve(__dirname, '../server/linux');
         }
         else{
             exeHome =  path.resolve(__dirname, '../server/mac');
         }
-        
-        const launchersFound: Array<string> = glob.sync('**/lpg-v*', 
+
+        const launchersFound: Array<string> = glob.sync('**/lpg-v*',
         { cwd: exeHome });
         if (launchersFound.length) {
             return [(path.resolve(exeHome, launchersFound[0])),exeHome] ;
@@ -322,10 +345,10 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             return  ["",exeHome] ;
         }
     }
-    function generate(fileName : string,options: GenerationOptions,outputChannel:OutputInfoCollector): Promise<string[]> 
+    function generate(fileName : string,options: GenerationOptions,outputChannel:OutputInfoCollector): Promise<string[]>
  {
     return new Promise<string[]>((resolve, reject) => {
-       
+
         let  cmd_string : string;
         if (options.alternativeExe) {
             cmd_string= (options.alternativeExe);
@@ -336,7 +359,7 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
                 reject("Can't find LPG generator");
             }
             else{
-                
+
             }
         }
         if (! fs.pathExistsSync(cmd_string) ){
@@ -344,7 +367,12 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             return
         }
         const parameters = [];
-        
+        parameters.push("-table");
+        const language = resolveTargetLanguage(options);
+        if (language) {
+            parameters.push("-programming_language=" + language);
+        }
+
         if (options.quiet) {
             parameters.push("-quiet");
         }
@@ -359,18 +387,18 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         }
         if (options.trace) {
             parameters.push("-trace=" + options.trace);
-        } 
+        }
 
         if (options.include_search_directory || options.template_search_directory) {
 
             let arg: string = "-include-directory=";
             if (options.include_search_directory ) {
-          
+
                 arg += options.include_search_directory;
                 arg += ";";
             }
             if (options.template_search_directory) {
-          
+
                 arg += options.template_search_directory;
             }
             parameters.push(arg);
@@ -378,14 +406,14 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
 
         if (options.outputDir) {
             parameters.push("-out_directory=" +options.outputDir);
-        
+
         }
 
         if (options.additionalParameters) {
             parameters.push(options.additionalParameters);
         }
 
-        
+
         parameters.push(fileName);
         const spawnOptions = { cwd: options.outputDir ? options.outputDir : undefined };
         outputChannel.appendLine(parameters.join(" "))
@@ -411,7 +439,14 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
             outputList.push(text);
         })
         lpg_process.on("close", (code) => {
-            resolve(outputList); // Treat this as non-grammar output (e.g. Java exception).
+            if (code === 0 || code === null) {
+                resolve(outputList);
+                return;
+            }
+            const details = outputList.join("").trim();
+            reject(details.length
+                ? `LPG exited with code ${code}:\n${details}`
+                : `LPG exited with code ${code}`);
         });
     });
 }

@@ -348,6 +348,8 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         const launchersFound: Array<string> = glob.sync('**/lpg-v*',
         { cwd: exeHome });
         if (launchersFound.length) {
+            // Prefer the newest generator if multiple lpg-v* binaries are present.
+            launchersFound.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
             return [(path.resolve(exeHome, launchersFound[0])),exeHome] ;
         } else {
             return  ["",exeHome] ;

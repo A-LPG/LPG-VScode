@@ -84,6 +84,8 @@ cp -R "$TEMPLATES_SRC/include" "$EXT_ROOT/templates/include"
 
 SERVER_DIR="$EXT_ROOT/server/$PLATFORM"
 mkdir -p "$SERVER_DIR"
+# Drop prior generator binaries so packaging ships a single lpg-v* version.
+rm -f "$SERVER_DIR"/lpg-v*
 cp "$LPG_BIN" "$SERVER_DIR/"
 chmod +x "$SERVER_DIR/$(basename "$LPG_BIN")" || true
 

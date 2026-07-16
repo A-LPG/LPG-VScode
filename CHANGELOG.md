@@ -7,6 +7,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Released]
 
 ### Unreleased
+
+### 0.0.18
+* Ship with LPG generator **2.3.0** (assemble-release defaults updated; removes prior `lpg-v*` on assemble).
+* Prefer newest bundled `lpg-v*` when multiple are present.
+* Webpack: `transpileOnly` + `skipLibCheck` so packaging works with current `@types/*`.
+* Drop removed stub languages from `language` setting enum.
+* Docs: generator alignment checklist for 2.3.0.
 * Docs: `language` setting drives generator `-programming_language` (not LSP-only).
 * Add: `automatic_ast` and `fail_on_conflicts` generation settings.
 * Add: `scripts/assemble-release.sh` to populate gitignored `templates/` + `server/` for packaging.

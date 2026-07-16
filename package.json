@@ -1,13 +1,13 @@
 {
 	"name": "lpg-vscode",
 	"displayName": "LPG grammar syntax support",
-    "description": "Language support for LPG grammar files",
+	"description": "Language support for LPG grammar files",
 	"bugs": {
 		"url": "https://github.com/A-LPG/LPG-VScode/issues"
 	},
 	"categories": [
-        "Programming Languages"
-    ],
+		"Programming Languages"
+	],
 	"homepage": "https://github.com/A-LPG/LPG-VScode/blob/master/README.md",
 	"keywords": [
 		"LPG",
@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.17",
+	"version": "0.0.18",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -224,15 +224,14 @@
 							]
 						},
 						"package": {
-                            "type": "string",
-                            "default": "",
-                            "description": "Package/namespace for generated code"
-							
-                        },
+							"type": "string",
+							"default": "",
+							"description": "Package/namespace for generated code"
+						},
 						"language": {
-                            "type": "string",
-                            "default": "java",
-                            "description": "Target programming language passed to the generator (-programming_language).",
+							"type": "string",
+							"default": "java",
+							"description": "Target programming language passed to the generator (-programming_language).",
 							"enum": [
 								"c++",
 								"rt_cpp",
@@ -262,7 +261,6 @@
 							"default": false,
 							"description": "Fail generation when shift/reduce or reduce/reduce conflicts remain (-fail_on_conflicts)."
 						},
-
 						"outputDir": {
 							"type": "string",
 							"default": "",
@@ -346,15 +344,14 @@
 		"lint": "eslint \"./src/**/*.ts\""
 	},
 	"dependencies": {
-		
 		"d3": "^5.9.0",
 		"expand-home-dir": "^0.0.3",
 		"fs-extra": "^9.0.1",
 		"get-port": "^5.1.1",
+		"plist": "^3.0.4",
 		"vscode-languageclient": "7.0.0-next.9",
 		"winston": "^3.2.1",
-		"winston-daily-rotate-file": "^3.10.0",
-		"plist": "^3.0.4"
+		"winston-daily-rotate-file": "^3.10.0"
 	},
 	"devDependencies": {
 		"@types/expect": "^24.3.0",
@@ -364,20 +361,20 @@
 		"@types/lodash.findindex": "^4.6.6",
 		"@types/mocha": "^8.2.2",
 		"@types/node": "^14.14.37",
+		"@types/plist": "^3.0.2",
 		"@types/vscode": "1.48.0",
+		"@vscode/vsce": "^3.9.2",
+		"eslint": "^7.23.0",
 		"glob": "^7.1.4",
 		"lodash.findindex": "^4.6.0",
 		"lodash.template": ">=4.5.0",
 		"mocha": "^7.1.0",
+		"ts-loader": "^9.2.3",
+		"tslint": "^6.1.3",
 		"typescript": "^3.8.3",
 		"vsce": "^1.75.0",
 		"vscode-test": "^1.3.0",
 		"webpack": "^5.44.0",
-		"webpack-cli": "^4.7.2",
-		"ts-loader": "^9.2.3",
-		"tslint": "^6.1.3",
-		"eslint": "^7.23.0",
-		"@types/plist": "^3.0.2"
-
+		"webpack-cli": "^4.7.2"
 	}
 }

@@ -232,7 +232,7 @@
 						"language": {
                             "type": "string",
                             "default": "java",
-                            "description": "Specifies the target language for the Lsp  server.",
+                            "description": "Target programming language passed to the generator (-programming_language).",
 							"enum": [
 								"c",
 								"c++",
@@ -252,6 +252,22 @@
 								"undefined"
 							]
 						},
+						"automatic_ast": {
+							"type": "string",
+							"default": "none",
+							"description": "Automatic AST generation mode (-automatic_ast).",
+							"enum": [
+								"none",
+								"nested",
+								"toplevel"
+							]
+						},
+						"fail_on_conflicts": {
+							"type": "boolean",
+							"default": false,
+							"description": "Fail generation when shift/reduce or reduce/reduce conflicts remain (-fail_on_conflicts)."
+						},
+
 						"outputDir": {
 							"type": "string",
 							"default": "",

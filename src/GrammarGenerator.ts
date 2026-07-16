@@ -53,6 +53,12 @@ const expandHomeDir = require("expand-home-dir");
     // Generate visitor files if set (default: false).
     visitor?: string;
 
+    // Automatic AST mode (-automatic_ast).
+    automatic_ast?: string;
+
+    // Fail when conflicts remain (-fail_on_conflicts).
+    fail_on_conflicts?: boolean;
+
     trace?: string;
     quiet?: boolean;
     verbose?: boolean;
@@ -134,6 +140,8 @@ export function GetGenerationOptions(basePath: string | undefined, outputDir : s
         language : config.language as string,
         package : config.package as string,
         visitor : config.visitor as string,
+        automatic_ast: config.automatic_ast as string,
+        fail_on_conflicts: config.fail_on_conflicts as boolean,
         trace: config.trace as string,
         quiet: config.quiet as boolean,
         verbose: config.verbose as boolean,
@@ -384,6 +392,12 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         }
         if (options.visitor) {
             parameters.push("-visitor=" + options.visitor);
+        }
+        if (options.automatic_ast && options.automatic_ast !== "none") {
+            parameters.push("-automatic_ast=" + options.automatic_ast);
+        }
+        if (options.fail_on_conflicts) {
+            parameters.push("-fail_on_conflicts");
         }
         if (options.trace) {
             parameters.push("-trace=" + options.trace);

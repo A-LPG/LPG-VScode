@@ -6,6 +6,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Released]
 
+### Unreleased
+* Docs: `language` setting drives generator `-programming_language` (not LSP-only).
+* Add: `automatic_ast` and `fail_on_conflicts` generation settings.
+* Add: `scripts/assemble-release.sh` to populate gitignored `templates/` + `server/` for packaging.
+
 ### 0.0.17
 * Add: Add ruleIndex to rule class on all  the target.
 * Add:Add rule name table in  table when generate ast.

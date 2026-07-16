@@ -60,6 +60,14 @@ There are a number of documentation files for specific topics:
 
 See the [Git issue tracker](https://github.com/A-LPG/LPG-VScode/issues).
 
+## Release / generator alignment checklist (LPG2 2.3.0+)
+
+1. Point assemble script at `lpg-v2.3.0` (`scripts/assemble-release.sh`).
+2. Generate with `-table` for `rust` / `java` / `rt_cpp` from the command palette.
+3. Confirm non-zero generator exits (including conflict fail-fast exit 12) show `showErrorMessage`.
+4. Confirm settings enum has no stub languages (`c` / `ml` / `plx` / `plxasm` / `xml`).
+5. Optional: smoke LSP hover/completion on a small `.g`.
+
 ## What's planned next?
 
 Bug fixing and what feels appealing to hack on.

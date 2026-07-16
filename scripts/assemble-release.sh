@@ -3,7 +3,7 @@
 #
 # Usage (from anywhere):
 #   ./tool/LPG-VScode/scripts/assemble-release.sh \
-#     --lpg-bin /path/to/lpg-v2.2.03 \
+#     --lpg-bin /path/to/lpg-v2.3.0 \
 #     [--lsp-bin /path/to/LPG-language-server] \
 #     [--platform mac|linux|win] \
 #     [--templates-src /path/to/lpg-generator-templates-2.1.00]
@@ -57,9 +57,9 @@ fi
 
 if [[ -z "$LPG_BIN" ]]; then
   for candidate in \
-    "$LPG2_ROOT/lpg2/build/lpg-v2.2.03" \
-    "$LPG2_ROOT/lpg2/build-plan/lpg-v2.2.03" \
-    "$LPG2_ROOT/lpg2/install/bin/lpg-v2.2.03"
+    "$LPG2_ROOT/lpg2/build/lpg-v2.3.0" \
+    "$LPG2_ROOT/lpg2/build-plan/lpg-v2.3.0" \
+    "$LPG2_ROOT/lpg2/install/bin/lpg-v2.3.0"
   do
     if [[ -x "$candidate" ]]; then
       LPG_BIN="$candidate"

@@ -341,7 +341,9 @@
 		"package": "vsce package",
 		"vscode:prepublish": "webpack --mode production",
 		"compile": "tsc -p ./&webpack --mode development",
-		"lint": "eslint \"./src/**/*.ts\""
+		"lint": "eslint \"./src/**/*.ts\"",
+		"test": "node ./out/test/runTest.js",
+		"pretest": "tsc -p ./"
 	},
 	"dependencies": {
 		"d3": "^5.9.0",

@@ -3,7 +3,7 @@
 import * as path from 'path';
 import { commands, ExtensionContext, TextEditor, TextEditorEdit, window } from 'vscode';
 import { TextDocumentIdentifier } from 'vscode-languageclient';
-import { Commands } from './commands';
+import { Commands } from './Commands';
 import {   CallGraphRequest, FirstSet_AllRules_Request, FirstSet_SingleRule_Request, FollowSet_AllRules_Request, FollowSet_SingleRule_Request, RRD_AllRules_Request, RRD_SingleRule_Request} from './protocol';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { getTextDocumentPositionParams } from './Utils';

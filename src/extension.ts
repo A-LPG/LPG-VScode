@@ -23,7 +23,7 @@ import { LanguageClient, ServerOptions, StreamInfo } from 'vscode-languageclient
 
 import { logger, initializeLogFile } from './log';
 import * as child_process from "child_process";
-import { Commands } from './commands';
+import { Commands } from './Commands';
 import { deleteDirectory, get_free_port, isString } from './Utils';
 import { ActionableMessage, ActionableNotification, ProgressReport, ProgressReportNotification } from './protocol';
 import { serverTasks } from './serverTasks';

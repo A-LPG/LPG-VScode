@@ -7,7 +7,7 @@ import { workspace } from "vscode";
 import { window } from "vscode";
 import { ProgressIndicator } from "./ProgressIndicator";
 import { OutputInfoCollector } from "./extension";
-import { Constant } from "./commands";
+import { Constant } from "./Commands";
 import { allowExecution, isLinux, isWindows } from "./Utils";
 import glob = require("glob");
 import { settings } from "cluster";

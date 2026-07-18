@@ -2,7 +2,7 @@
 
 
 import { commands, ExtensionContext,  window, workspace } from 'vscode';
-import { Commands} from './commands';
+import { Commands } from './Commands';
 import {   GetInlineNonTerminalRefactorRequest, GetMakeEmptyRefactorRequest, GetMakeLeftRecursiveRefactorRequest, GetNonEmptyRefactorRequest, RefactorWorkspaceEdit} from './protocol';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { getTextDocumentPositionParams } from './Utils';

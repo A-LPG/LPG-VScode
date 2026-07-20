@@ -12,6 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Improve: TextMate scopes use theme-friendly names (rule LHS / terminals / nonterminals) so grammars are not a flat default-foreground blob.
 * Add: `[lpg]` enables `editor.semanticHighlighting` by default; map semantic tokens to LPG TextMate scopes.
 * Add: Language server semantic tokens distinguish terminals (`enumMember`) vs nonterminals (`type`) and mark rule LHS as `function`+`declaration`.
+* Fixed: Call Graph webview — vendor `d3.min.js` under `misc/` (VSIX excludes `node_modules`) and modernize webview CSP/`localResourceRoots`.
 
 ### 0.0.20
 * Add: TextMate grammar, language configuration (bracket pairs), and EBNF snippets.

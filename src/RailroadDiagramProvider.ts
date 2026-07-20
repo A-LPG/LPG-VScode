@@ -34,7 +34,7 @@ export class LpgRailroadDiagramProvider extends WebviewProvider {
             <html>
             <head>
                 <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
-                ${this.generateContentSecurityPolicy(editor)}
+                ${this.generateContentSecurityPolicy(webView)}
                 ${this.getStyles(webView)}
                 <base href="${editor.document.uri.toString(true)}">
             </head>

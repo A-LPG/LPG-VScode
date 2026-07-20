@@ -35,20 +35,20 @@ export class LpgCallGraphProvider extends WebviewProvider {
         }
 
         const nonce = new Date().getTime() + "" + new Date().getMilliseconds();
+        // Vendor d3 under misc/ — packaged VSIX excludes node_modules (.vscodeignore).
         const scripts = [
+            Utils.getMiscPath("d3.min.js", this.context, webView),
             Utils.getMiscPath("utils.js", this.context, webView),
             Utils.getMiscPath("call-graph.js", this.context, webView),
         ];
-        const graphLibPath = Utils.getNodeModulesPath("d3/dist/d3.js", this.context);
 
         const diagram = `<!DOCTYPE html>
             <html>
                 <head>
                     <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
-                    ${this.generateContentSecurityPolicy(source)}
+                    ${this.generateContentSecurityPolicy(webView)}
                     ${this.getStyles(webView)}
                     <base href="${uri.toString(true)}">
-                    <script src="${graphLibPath}"></script>
                     <script>
                         var data = ${JSON.stringify(data)};
                     </script>

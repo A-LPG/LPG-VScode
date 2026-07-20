@@ -52,6 +52,9 @@ export class WebviewProvider {
             "lpg-vscode-webview", options.title, ViewColumn.Two, {
                 enableScripts: true,
                 retainContextWhenHidden: true,
+                localResourceRoots: [
+                    Uri.joinPath(this.context.extensionUri, "misc"),
+                ],
             },
         );
         this.webViewMap.set(uriString, [panel, options]);
@@ -145,11 +148,13 @@ export class WebviewProvider {
         return "";
     }
 
-    protected generateContentSecurityPolicy(_: TextEditor | Uri): string {
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'self';
-            script-src vscode-resource: 'self' 'unsafe-inline' 'unsafe-eval' https:;
-            style-src vscode-resource: 'self' 'unsafe-inline';
-            img-src vscode-resource: 'self' "/>
+    protected generateContentSecurityPolicy(webView: Webview): string {
+        const csp = webView.cspSource;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none';
+            script-src ${csp} 'unsafe-inline' 'unsafe-eval';
+            style-src ${csp} 'unsafe-inline';
+            img-src ${csp} data:;
+            font-src ${csp};"/>
         `;
     }
 

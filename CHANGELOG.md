@@ -8,6 +8,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Unreleased
 
+### 0.0.21
+* Improve: TextMate scopes use theme-friendly names (rule LHS / terminals / nonterminals) so grammars are not a flat default-foreground blob.
+* Add: `[lpg]` enables `editor.semanticHighlighting` by default; map semantic tokens to LPG TextMate scopes.
+* Add: Language server semantic tokens distinguish terminals (`enumMember`) vs nonterminals (`type`) and mark rule LHS as `function`+`declaration`.
+
 ### 0.0.20
 * Add: TextMate grammar, language configuration (bracket pairs), and EBNF snippets.
 * Add: `lpg.generation.setting.ebnf` → passes `-ebnf` to the generator.

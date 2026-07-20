@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.20",
+	"version": "0.0.21",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -44,9 +44,29 @@
 			{
 				"language": "lpg",
 				"scopeName": "source.lpg",
-				"path": "./syntaxes/lpg.tmLanguage.json"
+				"path": "./syntaxes/lpg.tmLanguage.json",
+				"semanticTokenScopes": [
+					{
+						"scopes": {
+							"type": ["entity.name.type.lpg"],
+							"enumMember": ["constant.language.lpg"],
+							"function": ["entity.name.function.lpg"],
+							"macro": ["variable.other.macro.lpg"],
+							"property": ["entity.name.tag.option.lpg"],
+							"keyword": ["keyword.control.section.lpg"],
+							"operator": ["keyword.operator.ebnf.lpg"],
+							"string": ["string.quoted.single.lpg"],
+							"comment": ["comment.line.double-dash.lpg"]
+						}
+					}
+				]
 			}
 		],
+		"configurationDefaults": {
+			"[lpg]": {
+				"editor.semanticHighlighting.enabled": true
+			}
+		},
 		"snippets": [
 			{
 				"language": "lpg",

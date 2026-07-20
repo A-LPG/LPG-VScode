@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.21",
+	"version": "0.0.22",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -251,7 +251,8 @@
 						"trace": "conflicts",
 						"quiet": false,
 						"verbose": false,
-						"ebnf": false
+						"ebnf": false,
+						"analyzeOnSave": true
 					},
 					"description": "Settings related to parser generation",
 					"properties": {
@@ -369,6 +370,11 @@
 							"type": "boolean",
 							"default": false,
 							"description": "Pass -ebnf to the generator (EBNF sugar: ? * + groups and ISO [ ] { }). Prefer %Options ebnf in the grammar when possible."
+						},
+						"analyzeOnSave": {
+							"type": "boolean",
+							"default": true,
+							"description": "On save, run the generator with -nowrite -diagnostics=json and show errors/conflicts in the Problems panel."
 						},
 						"alternativeExe": {
 							"type": "string",

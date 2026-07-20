@@ -8,6 +8,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Unreleased
 
+### 0.0.22
+* Add: Generator diagnostics in the Problems panel via `-diagnostics=json` on Generate and on save (`lpg.generation.setting.analyzeOnSave`, default on, uses `-nowrite`).
+* Add: Quick fixes on conflict/generator diagnostics — copy message, suggest `-list` for listing files.
+
 ### 0.0.21
 * Improve: TextMate scopes use theme-friendly names (rule LHS / terminals / nonterminals) so grammars are not a flat default-foreground blob.
 * Add: `[lpg]` enables `editor.semanticHighlighting` by default; map semantic tokens to LPG TextMate scopes.

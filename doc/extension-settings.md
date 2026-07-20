@@ -30,6 +30,7 @@ This is a settings object named **lpg.generation.setting** with the following me
 * **quiet**, false (default: false), quiet option.
 * **verbose**, false (default: false), verbose option.
 * **ebnf**, boolean (default: false), if true passes `-ebnf` to the generator so EBNF sugar (`?` `*` `+`, groups `(…)`, ISO `[…]` / `{…}`) is expanded. Prefer `%Options ebnf` in the grammar when possible.
+* **analyzeOnSave**, boolean (default: true), on save run the generator with `-nowrite -diagnostics=json` and publish errors/conflicts to the Problems panel (`source: lpg`). Disable if you only want LSP diagnostics.
 * **alternativeExe**, string (default: undefined), specifies the lpg.exe to use for generation, instead of the ones shipping with this extension.
 * **additionalParameters**, string (default: undefined), specifies additional parameters to be passed on to the lpg.exe (built-in or custom) during parser generation.
 

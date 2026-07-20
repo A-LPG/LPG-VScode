@@ -2,7 +2,7 @@ import * as child_process from "child_process";
 import * as path from "path";
 
 import * as fs from "fs-extra";
-import { TextDocument } from "vscode";
+import { TextDocument, Uri } from "vscode";
 import { workspace } from "vscode";
 import { window } from "vscode";
 import { ProgressIndicator } from "./ProgressIndicator";
@@ -10,8 +10,12 @@ import { OutputInfoCollector } from "./extension";
 import { Constant } from "./Commands";
 import { allowExecution, isLinux, isWindows } from "./Utils";
 import glob = require("glob");
-import { settings } from "cluster";
-import { PlatformInformation } from "./platform";
+import {
+    formatReportForChannel,
+    LpgJsonReport,
+    parseDiagnosticsJson,
+    publishGeneratorReport,
+} from "./GeneratorDiagnostics";
 
 
 const expandHomeDir = require("expand-home-dir");
@@ -65,6 +69,12 @@ const expandHomeDir = require("expand-home-dir");
     /** Pass -ebnf to lpg-v2 (opt-in EBNF sugar). */
     ebnf?: boolean;
 
+    /** Analysis-only: -nowrite (no generated files). */
+    nowrite?: boolean;
+
+    /** Emit machine-readable diagnostics on stdout (-diagnostics=json). */
+    diagnosticsJson?: boolean;
+
     // Use this jar for work instead of the built-in one(s).
     alternativeExe?: string;
 
@@ -72,6 +82,12 @@ const expandHomeDir = require("expand-home-dir");
 
     // Any additional parameter you want to send to LPG for generation (e.g. "-lalr=3").
     additionalParameters?: string;
+}
+
+export interface GenerateResult {
+    exitCode: number;
+    output: string[];
+    report?: LpgJsonReport;
 }
 export interface GenerationSettingOptions {
 
@@ -216,6 +232,33 @@ function resolveTargetLanguage(options: GenerationOptions): string {
      *
      * @param document For which to generate the data.
      */
+function resolveOutputDir(document: TextDocument, config: ReturnType<typeof workspace.getConfiguration>): string | undefined {
+        const basePath = path.dirname(document.fileName);
+        const mode = config.get<string>("mode");
+        if (mode === "none") {
+            return undefined;
+        }
+        let outputDir = path.join(basePath, ".lpg");
+        if (mode === "external") {
+            outputDir = config.get<string>("outputDir") as string;
+            if (!outputDir) {
+                outputDir = basePath;
+            } else if (!path.isAbsolute(outputDir)) {
+                outputDir = path.join(basePath, outputDir);
+            }
+        }
+        return outputDir;
+    }
+
+    function applyReport(uri: Uri, report: LpgJsonReport | undefined, outputChannel: OutputInfoCollector): void {
+        publishGeneratorReport(uri, report);
+        if (report) {
+            for (const line of formatReportForChannel(report)) {
+                outputChannel.appendLine(line);
+            }
+        }
+    }
+
    export  function regenerateParser(document: TextDocument,
         progress : ProgressIndicator,
         outputChannel:OutputInfoCollector): void
@@ -226,26 +269,12 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         }
 
         const grammarFileName = document.uri.fsPath;
-
-        const externalMode = config.get<string>("mode") === "external";
-
         progress.startAnimation();
         const basePath = path.dirname(document.fileName);
-
-
-        // In internal mode we generate files with the default target language into our .lpg folder.
-        // In external mode the files are generated into the given output folder (or the folder where the
-        // main grammar is). In this case we have to move the interpreter data to our .lpg folder.
-        let outputDir = path.join(basePath, ".lpg");
-        if (externalMode) {
-            outputDir = config.get<string>("outputDir") as string;
-            if (!outputDir) {
-                outputDir = basePath;
-            } else {
-                if (!path.isAbsolute(outputDir)) {
-                    outputDir = path.join(basePath, outputDir);
-                }
-            }
+        const outputDir = resolveOutputDir(document, config);
+        if (!outputDir) {
+            progress.stopAnimation();
+            return;
         }
 
         try {
@@ -257,20 +286,51 @@ function resolveTargetLanguage(options: GenerationOptions): string {
             return;
         }
 
-        const options= GetGenerationOptions(basePath,outputDir);
+        const options = GetGenerationOptions(basePath, outputDir);
+        options.diagnosticsJson = true;
 
-        const result = generate(grammarFileName, options,outputChannel);
-        result.then((out_strings: string[]) => {
-            for (const str of out_strings) {
-                outputChannel.appendLine(str)
+        generate(grammarFileName, options, outputChannel).then((result: GenerateResult) => {
+            for (const str of result.output) {
+                if (!str.trim().startsWith("{") || !str.includes("schema_version")) {
+                    outputChannel.appendLine(str);
+                }
             }
+            applyReport(document.uri, result.report, outputChannel);
             progress.stopAnimation();
-            window.showInformationMessage("Generate parser for " + grammarFileName + " has done.")
+            if (result.exitCode === 0 || result.exitCode === null) {
+                window.showInformationMessage("Generate parser for " + grammarFileName + " has done.");
+            } else {
+                outputChannel.show(true);
+                window.showErrorMessage(
+                    `Generate parser for ${grammarFileName} failed (exit ${result.exitCode}). See Problems / Output.`,
+                );
+            }
         }).catch((reason) => {
             progress.stopAnimation();
-            outputChannel.appendLine(reason);
+            outputChannel.appendLine(String(reason));
             outputChannel.show(true);
             window.showErrorMessage("Generate parser for " + grammarFileName + " failed: " + reason);
+        });
+    }
+
+    /** Background -nowrite analysis for Problems (analyzeOnSave). */
+    export function analyzeGrammarDocument(
+        document: TextDocument,
+        outputChannel?: OutputInfoCollector,
+    ): Promise<GenerateResult> {
+        const basePath = path.dirname(document.fileName);
+        const options = GetGenerationOptions(basePath, undefined);
+        options.nowrite = true;
+        options.diagnosticsJson = true;
+        options.quiet = true;
+        // Analysis should not create .lpg output.
+        options.outputDir = undefined;
+        const silent = outputChannel || {
+            appendLine: (_: string) => { /* no-op for save storm */ },
+        } as OutputInfoCollector;
+        return generate(document.uri.fsPath, options, silent).then((result) => {
+            publishGeneratorReport(document.uri, result.report);
+            return result;
         });
     }
 
@@ -318,9 +378,8 @@ function resolveTargetLanguage(options: GenerationOptions): string {
             return  ["",exeHome] ;
         }
     }
-    function generate(fileName : string,options: GenerationOptions,outputChannel:OutputInfoCollector): Promise<string[]>
- {
-    return new Promise<string[]>((resolve, reject) => {
+    function generate(fileName: string, options: GenerationOptions, outputChannel: OutputInfoCollector): Promise<GenerateResult> {
+    return new Promise<GenerateResult>((resolve, reject) => {
 
         let  cmd_string : string;
         if (options.alternativeExe) {
@@ -330,9 +389,7 @@ function resolveTargetLanguage(options: GenerationOptions): string {
             cmd_string = paths[0];
             if(!cmd_string.length){
                 reject("Can't find LPG generator");
-            }
-            else{
-
+                return;
             }
         }
         if (! fs.pathExistsSync(cmd_string) ){
@@ -340,6 +397,13 @@ function resolveTargetLanguage(options: GenerationOptions): string {
             return
         }
         const parameters = [];
+        if (options.nowrite) {
+            parameters.push("-nowrite");
+        }
+        if (options.diagnosticsJson !== false) {
+            // Default on for Problems integration; callers can set false to opt out.
+            parameters.push("-diagnostics=json");
+        }
         parameters.push("-table");
         const language = resolveTargetLanguage(options);
         if (language) {
@@ -397,7 +461,7 @@ function resolveTargetLanguage(options: GenerationOptions): string {
 
 
         parameters.push(fileName);
-        const spawnOptions = { cwd: options.outputDir ? options.outputDir : undefined };
+        const spawnOptions = { cwd: options.baseDir || path.dirname(fileName) };
         outputChannel.appendLine(parameters.join(" "))
         const lpg_process = child_process.spawn(cmd_string, parameters, spawnOptions);
 
@@ -421,14 +485,13 @@ function resolveTargetLanguage(options: GenerationOptions): string {
             outputList.push(text);
         })
         lpg_process.on("close", (code) => {
-            if (code === 0 || code === null) {
-                resolve(outputList);
-                return;
-            }
-            const details = outputList.join("").trim();
-            reject(details.length
-                ? `LPG exited with code ${code}:\n${details}`
-                : `LPG exited with code ${code}`);
+            const joined = outputList.join("");
+            const report = parseDiagnosticsJson(joined);
+            const exitCode = code === null ? 0 : code;
+            resolve({ exitCode, output: outputList, report });
+        });
+        lpg_process.on("error", (err) => {
+            reject(err.message || String(err));
         });
     });
 }

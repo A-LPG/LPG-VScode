@@ -32,7 +32,8 @@ import { TextEditor } from 'vscode';
 import * as analysisAction from  './Analysis';
 import { ProgressIndicator } from './ProgressIndicator';
 import { TextEditorEdit } from 'vscode';
-import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser, setExtensionPath } from './GrammarGenerator';
+import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser, analyzeGrammarDocument, setExtensionPath } from './GrammarGenerator';
+import { analyzeOnSaveEnabled, registerGeneratorDiagnostics } from './GeneratorDiagnostics';
 
 
 
@@ -426,6 +427,30 @@ export async function activate(context: vscode.ExtensionContext)
    (textEditor: TextEditor, edit: TextEditorEdit) => {
 		regenerateParser(textEditor.document,progress,outputChannel);
    }));
+   registerGeneratorDiagnostics(context.subscriptions);
+
+   let analyzeTimer: ReturnType<typeof setTimeout> | undefined;
+   context.subscriptions.push(workspace.onDidSaveTextDocument((doc) => {
+		if (doc.languageId !== "lpg") {
+			return;
+		}
+		if (!analyzeOnSaveEnabled()) {
+			return;
+		}
+		const mode = workspace.getConfiguration("lpg.generation.setting").get<string>("mode");
+		if (mode === "none") {
+			return;
+		}
+		if (analyzeTimer) {
+			clearTimeout(analyzeTimer);
+		}
+		analyzeTimer = setTimeout(() => {
+			void analyzeGrammarDocument(doc).catch((err) => {
+				outputChannel.appendLine(`analyzeOnSave failed: ${err}`);
+			});
+		}, 400);
+   }));
+
    start_server(context);
 
 }

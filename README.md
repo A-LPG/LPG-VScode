@@ -29,6 +29,8 @@
 ### Grammar Validations
 
 * In the background syntax checking takes place, while typing. Also some semantic checks are done.
+* Generator-level errors/conflicts appear in the **Problems** panel: on **Generate parser**, and on save when `lpg.generation.setting.analyzeOnSave` is enabled (default). Uses `-diagnostics=json` / `-nowrite`.
+* Lightbulb quick fixes on conflict diagnostics: copy message, suggest regenerating with `-list`.
 >![](https://raw.githubusercontent.com/A-LPG/LPG-VScode/master/doc/img/dianosic.png)
 
 
@@ -74,4 +76,6 @@ See the [Git issue tracker](https://github.com/A-LPG/LPG-VScode/issues).
 
 ## What's planned next?
 
-Bug fixing and what feels appealing to hack on.
+1. Interactive **Test Grammar** panel (sample input → tokens / parse tree).
+2. CodeLens reference counts + more lightbulb refactors.
+3. Marketplace / publish automation (needs operator PATs).

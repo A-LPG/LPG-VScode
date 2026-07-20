@@ -8,6 +8,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Unreleased
 
+### 0.0.20
+* Add: TextMate grammar, language configuration (bracket pairs), and EBNF snippets.
+* Add: `lpg.generation.setting.ebnf` → passes `-ebnf` to the generator.
+* Add: Language server sugar-AST EBNF support (outline/highlight for `?` `*` `+` groups / ISO brackets).
+* Fixed: WorkspaceConfiguration must use `.get()`; always inject built-in template dirs so `dtParserTemplateF.gi` resolves.
+* Fixed: LSP initialize/`client/registerCapability` issues that left Outline empty in Cursor/VS Code.
+
 ### 0.0.18
 * Ship with LPG generator **2.3.0** (assemble-release defaults updated; removes prior `lpg-v*` on assemble).
 * Prefer newest bundled `lpg-v*` when multiple are present.

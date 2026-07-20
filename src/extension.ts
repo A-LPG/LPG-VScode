@@ -32,7 +32,7 @@ import { TextEditor } from 'vscode';
 import * as analysisAction from  './Analysis';
 import { ProgressIndicator } from './ProgressIndicator';
 import { TextEditorEdit } from 'vscode';
-import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser } from './GrammarGenerator';
+import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser, setExtensionPath } from './GrammarGenerator';
 
 
 
@@ -252,8 +252,13 @@ function get_server_port():string{
 	return "";
 }
 function  start_lpg(context: vscode.ExtensionContext) { 
-
+	setExtensionPath(context.extensionPath);
 	let generate_option = GetGenerationOptions(undefined,undefined);
+	if (outputChannel) {
+		outputChannel.appendLine(
+			`LPG template dirs: include=${generate_option.include_search_directory} template=${generate_option.template_search_directory}`
+		);
+	}
 	let clientOptions: LanguageClientOptions =
 	{
 		// Register the server for plain text documents
@@ -357,7 +362,7 @@ function  start_lpg(context: vscode.ExtensionContext) {
 		else{
 			
 			const parameters = [];
-			const spawnOptions = { cwd: exeHome };
+			const spawnOptions = { cwd: context.extensionPath || exeHome };
 			parameters.push("--port")
 			parameters.push(lsPort)
 			parameters.push("--watchParentProcess")
@@ -392,6 +397,7 @@ function  start_lpg(context: vscode.ExtensionContext) {
 }
 export async function activate(context: vscode.ExtensionContext)
 {
+	setExtensionPath(context.extensionPath);
 	progress = new ProgressIndicator();
     let storagePath = context.storagePath;
 	if (!storagePath) {

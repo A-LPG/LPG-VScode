@@ -1,0 +1,37 @@
+{
+  "Options with ebnf": {
+    "prefix": "lpg-ebnf",
+    "body": [
+      "%Options",
+      "    la=${1:1},",
+      "    ebnf",
+      "%End"
+    ],
+    "description": "Insert %Options block enabling EBNF sugar"
+  },
+  "Optional group": {
+    "prefix": "lpg-opt",
+    "body": "(${1:sym})?",
+    "description": "EBNF optional group"
+  },
+  "Zero-or-more group": {
+    "prefix": "lpg-star",
+    "body": "(${1:sym})*",
+    "description": "EBNF zero-or-more group"
+  },
+  "One-or-more group": {
+    "prefix": "lpg-plus",
+    "body": "(${1:sym})+",
+    "description": "EBNF one-or-more group"
+  },
+  "ISO optional": {
+    "prefix": "lpg-iso-opt",
+    "body": "[${1:sym}]",
+    "description": "ISO EBNF optional brackets"
+  },
+  "ISO zero-or-more": {
+    "prefix": "lpg-iso-star",
+    "body": "{${1:sym}}",
+    "description": "ISO EBNF zero-or-more braces"
+  }
+}

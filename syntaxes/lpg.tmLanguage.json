@@ -1,0 +1,82 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "LPG",
+  "scopeName": "source.lpg",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#action-block" },
+    { "include": "#section-keyword" },
+    { "include": "#macro" },
+    { "include": "#string" },
+    { "include": "#produces" },
+    { "include": "#ebnf-operator" },
+    { "include": "#or-marker" },
+    { "include": "#identifier" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.double-dash.lpg",
+      "match": "--.*$"
+    },
+    "action-block": {
+      "name": "meta.embedded.block.action.lpg",
+      "begin": "/\\.",
+      "end": "\\./",
+      "patterns": [
+        { "name": "comment.line.double-dash.lpg", "match": "--.*$" }
+      ]
+    },
+    "section-keyword": {
+      "name": "keyword.control.section.lpg",
+      "match": "(?i)%(Options|Alias|Ast|Define|Eof|Eol|Error|Export|Globals|Headers|Identifier|Import|Include|Keywords|Names|Notice|Rules|SoftKeywords|Start|Terminals|Trailers|Types|Recover|End|DroppedSymbols|DroppedRules|DisjointPredecessorSets)\\b"
+    },
+    "macro": {
+      "name": "variable.other.macro.lpg",
+      "match": "\\$[A-Za-z_][A-Za-z0-9_]*"
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.lpg",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.lpg", "match": "''" }
+          ]
+        },
+        {
+          "name": "string.quoted.double.lpg",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.lpg", "match": "\"\"" }
+          ]
+        },
+        {
+          "name": "string.quoted.other.bracket.lpg",
+          "begin": "<",
+          "end": ">",
+          "patterns": [
+            { "name": "constant.character.escape.lpg", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "produces": {
+      "name": "keyword.operator.produces.lpg",
+      "match": "(::=\\??|->\\??)"
+    },
+    "ebnf-operator": {
+      "name": "keyword.operator.ebnf.lpg",
+      "match": "[?*+(){}\\[\\]]"
+    },
+    "or-marker": {
+      "name": "keyword.operator.or.lpg",
+      "match": "\\|"
+    },
+    "identifier": {
+      "name": "identifier.lpg",
+      "match": "[A-Za-z_][A-Za-z0-9_]*"
+    }
+  }
+}

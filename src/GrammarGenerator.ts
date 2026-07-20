@@ -62,6 +62,8 @@ const expandHomeDir = require("expand-home-dir");
     trace?: string;
     quiet?: boolean;
     verbose?: boolean;
+    /** Pass -ebnf to lpg-v2 (opt-in EBNF sugar). */
+    ebnf?: boolean;
 
     // Use this jar for work instead of the built-in one(s).
     alternativeExe?: string;
@@ -112,6 +114,36 @@ async function fromEnv(name: string): Promise<string[]> {
     }
     return ret;
 }
+let cachedExtensionPath: string | undefined;
+
+/** Call once from activate() so built-in template paths resolve under webpack. */
+export function setExtensionPath(extensionPath: string): void {
+    cachedExtensionPath = extensionPath;
+}
+
+function extensionRoot(): string {
+    if (cachedExtensionPath) {
+        return cachedExtensionPath;
+    }
+    return path.resolve(__dirname, '..');
+}
+
+const BUILTIN_TEMPLATE_LANGS = [
+    "java", "rt_cpp", "csharp", "typescript", "python2", "python3", "dart", "go", "rust",
+] as const;
+
+function appendSearchPath(existing: string | undefined, dir: string): string {
+    if (!existing) {
+        return dir;
+    }
+    return existing.endsWith(";") ? existing + dir : existing + ";" + dir;
+}
+
+function resolveBuiltinTemplateLang(raw: string | undefined): string {
+    const lang = (raw && raw.trim()) || "java";
+    return (BUILTIN_TEMPLATE_LANGS as readonly string[]).includes(lang) ? lang : "java";
+}
+
 export function GetGenerationSettingOptions():GenerationSettingOptions{
     let option = GetGenerationOptions(undefined,undefined);
     let settings : GenerationSettingOptions={
@@ -131,101 +163,32 @@ export function GetGenerationSettingOptions():GenerationSettingOptions{
 export function GetGenerationOptions(basePath: string | undefined, outputDir : string | undefined):GenerationOptions
 {
     const config = workspace.getConfiguration(Constant.LPG_GENERATION);
+    // WorkspaceConfiguration values must be read via .get(); property access is always undefined.
+    // Parent object default may be only { mode }, so nested defaults need explicit fallbacks.
     const options: GenerationOptions = {
         baseDir: basePath,
-        template_search_directory: config.use_define_template_directory as string,
-        include_search_directory: config.use_define_include_directory as string,
+        template_search_directory: config.get<string>("use_define_template_directory") || "",
+        include_search_directory: config.get<string>("use_define_include_directory") || "",
         outputDir,
-        built_in_template : config.built_in_template as string,
-        language : config.language as string,
-        package : config.package as string,
-        visitor : config.visitor as string,
-        automatic_ast: config.automatic_ast as string,
-        fail_on_conflicts: config.fail_on_conflicts as boolean,
-        trace: config.trace as string,
-        quiet: config.quiet as boolean,
-        verbose: config.verbose as boolean,
-        alternativeExe: config.alternativeExe as string,
-        additionalParameters: config.additionalParameters as string,
+        built_in_template : resolveBuiltinTemplateLang(config.get<string>("built_in_template")),
+        language : config.get<string>("language") || "java",
+        package : config.get<string>("package") || "",
+        visitor : config.get<string>("visitor") || "default",
+        automatic_ast: config.get<string>("automatic_ast") || "none",
+        fail_on_conflicts: config.get<boolean>("fail_on_conflicts") ?? false,
+        trace: config.get<string>("trace") || "conflicts",
+        quiet: config.get<boolean>("quiet") ?? false,
+        verbose: config.get<boolean>("verbose") ?? false,
+        ebnf: config.get<boolean>("ebnf") ?? false,
+        alternativeExe: config.get<string>("alternativeExe") || "",
+        additionalParameters: config.get<string>("additionalParameters") || "",
     };
 
-    if(options.built_in_template){
-        if(!options.include_search_directory){
-            options.include_search_directory = "";
-        }
-        else{
-            options.include_search_directory +=";";
-        }
-        {
-            let templates_dir = path.resolve(__dirname, '../templates/include');
-            if(options.built_in_template === 'java'){
-                options.include_search_directory += path.resolve(templates_dir, 'java');
-            }
-            else if(options.built_in_template === 'rt_cpp'){
-                options.include_search_directory += path.resolve(templates_dir, 'rt_cpp');
-            }
-            else if(options.built_in_template === 'csharp'){
-                options.include_search_directory += path.resolve(templates_dir, 'csharp');
-            }
-            else if(options.built_in_template === 'typescript'){
-                options.include_search_directory += path.resolve(templates_dir, 'typescript');
-            }
-            else if(options.built_in_template === 'python2' ){
-                options.include_search_directory += path.resolve(templates_dir, 'python2');
-            }
-            else if(options.built_in_template === 'python3'){
-                options.include_search_directory += path.resolve(templates_dir, 'python3');
-            }
-            else if(options.built_in_template === 'dart'){
-                options.include_search_directory += path.resolve(templates_dir, 'dart');
-            }
-            else if(options.built_in_template === 'go'){
-                options.include_search_directory += path.resolve(templates_dir, 'go');
-            }
-            else if(options.built_in_template === 'rust'){
-                options.include_search_directory += path.resolve(templates_dir, 'rust');
-            }
-        }
-
-
-        if(!options.template_search_directory){
-            options.template_search_directory="";
-        }
-        else{
-            options.template_search_directory +=";";
-        }
-
-        {
-            let templates_dir = path.resolve(__dirname, '../templates/templates');
-            if(options.built_in_template === 'java'){
-                options.template_search_directory += path.resolve(templates_dir, 'java');
-            }
-            else if(options.built_in_template === 'rt_cpp'){
-                options.template_search_directory += path.resolve(templates_dir, 'rt_cpp');
-            }
-            else if(options.built_in_template === 'csharp'){
-                options.template_search_directory += path.resolve(templates_dir, 'csharp');
-            }
-            else if(options.built_in_template === 'typescript'){
-                options.template_search_directory += path.resolve(templates_dir, 'typescript');
-            }
-            else if(options.built_in_template === 'python2' ){
-                options.template_search_directory += path.resolve(templates_dir, 'python2');
-            }
-            else if(options.built_in_template === 'python3'){
-                options.template_search_directory += path.resolve(templates_dir, 'python3');
-            }
-            else if(options.built_in_template === 'dart'){
-                options.template_search_directory += path.resolve(templates_dir, 'dart');
-            }
-            else if(options.built_in_template === 'go'){
-                options.template_search_directory += path.resolve(templates_dir, 'go');
-            }
-            else if(options.built_in_template === 'rust'){
-                options.template_search_directory += path.resolve(templates_dir, 'rust');
-            }
-        }
-    }
+    const lang = options.built_in_template as string;
+    const includeDir = path.resolve(extensionRoot(), "templates/include", lang);
+    const templateDir = path.resolve(extensionRoot(), "templates/templates", lang);
+    options.include_search_directory = appendSearchPath(options.include_search_directory, includeDir);
+    options.template_search_directory = appendSearchPath(options.template_search_directory, templateDir);
 
     return options;
 }
@@ -258,13 +221,13 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         outputChannel:OutputInfoCollector): void
         {
         const config = workspace.getConfiguration(Constant.LPG_GENERATION);
-        if (config.mode === "none") {
+        if (config.get<string>("mode") === "none") {
             return;
         }
 
         const grammarFileName = document.uri.fsPath;
 
-        const externalMode = config.mode === "external";
+        const externalMode = config.get<string>("mode") === "external";
 
         progress.startAnimation();
         const basePath = path.dirname(document.fileName);
@@ -275,7 +238,7 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         // main grammar is). In this case we have to move the interpreter data to our .lpg folder.
         let outputDir = path.join(basePath, ".lpg");
         if (externalMode) {
-            outputDir = config.outputDir as string;
+            outputDir = config.get<string>("outputDir") as string;
             if (!outputDir) {
                 outputDir = basePath;
             } else {
@@ -391,6 +354,9 @@ function resolveTargetLanguage(options: GenerationOptions): string {
         }
         if (options.verbose) {
             parameters.push("-verbose");
+        }
+        if (options.ebnf) {
+            parameters.push("-ebnf");
         }
         if (options.visitor) {
             parameters.push("-visitor=" + options.visitor);

@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.18",
+	"version": "0.0.20",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -31,11 +31,26 @@
 		"languages": [
 			{
 				"id": "lpg",
+				"aliases": ["LPG", "lpg"],
 				"extensions": [
 					".g",
 					".gi",
 					".lpg"
-				]
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "lpg",
+				"scopeName": "source.lpg",
+				"path": "./syntaxes/lpg.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "lpg",
+				"path": "./snippets/lpg.json"
 			}
 		],
 		"commands": [
@@ -209,7 +224,14 @@
 				"lpg.generation.setting": {
 					"type": "object",
 					"default": {
-						"mode": "internal"
+						"mode": "internal",
+						"built_in_template": "java",
+						"language": "java",
+						"visitor": "default",
+						"trace": "conflicts",
+						"quiet": false,
+						"verbose": false,
+						"ebnf": false
 					},
 					"description": "Settings related to parser generation",
 					"properties": {
@@ -322,6 +344,11 @@
 							"type": "boolean",
 							"default": false,
 							"description": "verbose option"
+						},
+						"ebnf": {
+							"type": "boolean",
+							"default": false,
+							"description": "Pass -ebnf to the generator (EBNF sugar: ? * + groups and ISO [ ] { }). Prefer %Options ebnf in the grammar when possible."
 						},
 						"alternativeExe": {
 							"type": "string",

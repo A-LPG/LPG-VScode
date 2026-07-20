@@ -10,10 +10,14 @@
 
 ### Syntax Coloring
 
-* Syntax coloring for LPG grammars (.lpg .g and .gi files)
+* TextMate grammar for LPG files (`.lpg`, `.g`, `.gi`): section keywords, macros, strings, produces markers, and EBNF operators (`?` `*` `+` `( )` `[ ]` `{ }`).
+* Bracket matching / auto-close for `()`, `[]`, `{}` via `language-configuration.json`.
 >![Syntax Coloring](https://raw.githubusercontent.com/A-LPG/LPG-VScode/master/doc/img/hover.png)
 
-* Comes with an own beautiful color theme, which not only includes all the [recommended groups](http://manual.macromates.com/en/language_grammars), but also some special rules for grammar elements that you won't find in other themes (e.g. alt labels and options). They are, immodestly, named `Complete Dark` and `Complete Light`.
+### EBNF sugar (opt-in)
+
+* Language server and TextMate understand generator EBNF when the grammar uses `%Options ebnf` (or `la=…,ebnf`): groups, postfix quantifiers, ISO `[…]` / `{…}`.
+* Generation: set `lpg.generation.setting.ebnf` to pass `-ebnf`, or put `ebnf` in `%Options` (preferred).
 
 ### Code Completion + Symbol Information
 

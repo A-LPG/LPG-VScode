@@ -7,6 +7,7 @@ The vscode-lpg extension can be configured in many ways to support your preferre
 * **lpg.customCSS**, array of string (no default), list of absolute CSS file names for diagrams/graphs
 * **lpg.rrd.saveDir**, string (no default), default export target folder for railroad (syntax) diagrams
 * **lpg.call-graph.saveDir**, string (no default), default export target folder for call graphs
+* **lpg.test.jdkHome**, string (default: empty), optional JDK home used by **Test Grammar** (`java` / `javac`). Empty uses PATH.
 
 
 ## Parser Generation
@@ -34,8 +35,12 @@ This is a settings object named **lpg.generation.setting** with the following me
 * **alternativeExe**, string (default: undefined), specifies the lpg.exe to use for generation, instead of the ones shipping with this extension.
 * **additionalParameters**, string (default: undefined), specifies additional parameters to be passed on to the lpg.exe (built-in or custom) during parser generation.
 
+## Test Grammar
+
+Command **Test Grammar (Java)** (`lpg.tools.testGrammar`) generates Java nested-AST tables under `<grammarDir>/.lpg/test/`, compiles them with the bundled `server/lib/lpg-runtime.jar`, and runs `misc/java-testrig/LpgTestRig`. The grammar must declare `import_terminals=….gi`. Token-seeded examples without a real lexer are not supported.
+
 ## Packaging note
 
 `templates/` and `server/` are gitignored. Clean clones must run
 `scripts/assemble-release.sh` before local generate / `vsce package`. Marketplace
-VSIX builds include the assembled tree.
+VSIX builds include the assembled tree (including `server/lib/lpg-runtime.jar` and the precompiled testrig).

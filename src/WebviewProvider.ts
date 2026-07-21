@@ -31,7 +31,7 @@ export class WebviewProvider {
     // Keep track of all created panels, to avoid duplicates.
     private webViewMap = new Map<String, [WebviewPanel, WebviewShowOptions]>();
 
-    public constructor(protected languageClient : LanguageClient,protected context: ExtensionContext) { }
+    public constructor(protected languageClient: LanguageClient | undefined, protected context: ExtensionContext) { }
 
     public showWebview(source: TextEditor | Uri, options: WebviewShowOptions): void {
         this.currentEditor = (source instanceof Uri) ? undefined : source;

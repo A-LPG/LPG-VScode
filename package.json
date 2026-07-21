@@ -19,7 +19,7 @@
 		"type": "git",
 		"url": "https://github.com/A-LPG/LPG-VScode"
 	},
-	"version": "0.0.22",
+	"version": "0.0.23",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
@@ -121,6 +121,10 @@
 			{
 				"command": "lpg.tools.generateParser",
 				"title": "Generate parser for grammar file"
+			},
+			{
+				"command": "lpg.tools.testGrammar",
+				"title": "Test Grammar (Java)"
 			}
 		],
 		"menus": {
@@ -184,6 +188,11 @@
 					"when": "resourceLangId == lpg",
 					"command": "lpg.tools.generateParser",
 					"group": "lpg@12"
+				},
+				{
+					"when": "resourceLangId == lpg",
+					"command": "lpg.tools.testGrammar",
+					"group": "lpg@13"
 				}
 			]
 		},
@@ -240,6 +249,11 @@
 					"type": "string",
 					"default": "",
 					"description": "Default export target folder for call graphs"
+				},
+				"lpg.test.jdkHome": {
+					"type": "string",
+					"default": "",
+					"description": "Optional JDK home for Test Grammar (java/javac). Empty = use PATH."
 				},
 				"lpg.generation.setting": {
 					"type": "object",

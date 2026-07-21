@@ -14,8 +14,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 EXT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-# Prefer LPG2 monorepo layout: tool/LPG-VScode -> ../..
-LPG2_ROOT="$(cd "$EXT_ROOT/../.." && pwd)"
+# Resolve LPG2 root: sibling checkout (…/LPG-VScode + …/LPG2) or monorepo (…/LPG2/tool/LPG-VScode).
+if [[ -d "$EXT_ROOT/../LPG2/runtime/lpg-runtime" ]]; then
+  LPG2_ROOT="$(cd "$EXT_ROOT/../LPG2" && pwd)"
+elif [[ -d "$EXT_ROOT/../../runtime/lpg-runtime" ]]; then
+  LPG2_ROOT="$(cd "$EXT_ROOT/../.." && pwd)"
+else
+  LPG2_ROOT="$(cd "$EXT_ROOT/../.." && pwd)"
+fi
 
 LPG_BIN=""
 LSP_BIN=""
@@ -99,6 +105,38 @@ if [[ -n "$LSP_BIN" ]]; then
   echo "  lsp binary:     $LSP_BIN"
 else
   echo "  lsp binary:     (skipped; pass --lsp-bin to include LPG-language-server*)"
+fi
+
+# Java testrig runtime jar (Test Grammar panel).
+RUNTIME_SRC="$LPG2_ROOT/runtime/lpg-runtime"
+LIB_DIR="$EXT_ROOT/server/lib"
+mkdir -p "$LIB_DIR"
+if [[ -d "$RUNTIME_SRC/src/lpg/runtime" ]]; then
+  RT_CLASSES="$(mktemp -d)"
+  # shellcheck disable=SC2046
+  find "$RUNTIME_SRC/src" -name '*.java' > "$RT_CLASSES/sources.txt"
+  javac -encoding UTF-8 -source 8 -target 8 -d "$RT_CLASSES" @"$RT_CLASSES/sources.txt" \
+    >/dev/null 2>&1 || javac -encoding UTF-8 -d "$RT_CLASSES" @"$RT_CLASSES/sources.txt"
+  (cd "$RUNTIME_SRC/src" && find . -name '*.properties' | while read -r f; do
+    mkdir -p "$RT_CLASSES/$(dirname "$f")"
+    cp "$f" "$RT_CLASSES/$f"
+  done)
+  jar cf "$LIB_DIR/lpg-runtime.jar" -C "$RT_CLASSES" .
+  rm -rf "$RT_CLASSES"
+  echo "  runtime jar:    $LIB_DIR/lpg-runtime.jar"
+else
+  echo "  runtime jar:    (skipped; missing $RUNTIME_SRC/src)"
+fi
+
+# Precompile LpgTestRig into misc/java-testrig/classes if runtime jar exists.
+HARNESS_SRC="$EXT_ROOT/misc/java-testrig/LpgTestRig.java"
+HARNESS_OUT="$EXT_ROOT/misc/java-testrig/classes"
+if [[ -f "$LIB_DIR/lpg-runtime.jar" && -f "$HARNESS_SRC" ]]; then
+  rm -rf "$HARNESS_OUT"
+  mkdir -p "$HARNESS_OUT"
+  javac -encoding UTF-8 -source 8 -target 8 -cp "$LIB_DIR/lpg-runtime.jar" \
+    -d "$HARNESS_OUT" "$HARNESS_SRC"
+  echo "  testrig:        $HARNESS_OUT"
 fi
 
 echo "Done."

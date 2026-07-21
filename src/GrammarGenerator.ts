@@ -334,6 +334,43 @@ function resolveOutputDir(document: TextDocument, config: ReturnType<typeof work
         });
     }
 
+    /** Generate Java nested-AST tables into `<grammarDir>/.lpg/test` for the testrig. */
+    export async function generateForTestGrammar(
+        grammarPath: string,
+        outputChannel: OutputInfoCollector,
+    ): Promise<{ outDir: string; result: GenerateResult }> {
+        const basePath = path.dirname(grammarPath);
+        const outDir = path.join(basePath, ".lpg", "test");
+        await fs.ensureDir(outDir);
+        const config = workspace.getConfiguration(Constant.LPG_GENERATION);
+        const options = GetGenerationOptions(basePath, outDir);
+        // Test Grammar MVP: always Java + nested AST (ignore settings that would disable AST).
+        options.language = "java";
+        options.built_in_template = "java";
+        options.automatic_ast = "nested";
+        options.diagnosticsJson = true;
+        options.quiet = true;
+        // Conflicts should not block the interactive testrig (warnings still surface in Problems).
+        options.fail_on_conflicts = false;
+        // Honor settings ebnf, and enable when the grammar opts in via %Options ebnf.
+        const grammarText = await fs.readFile(grammarPath, "utf8");
+        options.ebnf = !!(config.get<boolean>("ebnf"))
+            || /\bebnf\b/i.test(grammarText);
+        const includeDir = path.resolve(extensionRoot(), "templates/include", "java");
+        const templateDir = path.resolve(extensionRoot(), "templates/templates", "java");
+        const userInclude = config.get<string>("use_define_include_directory") || "";
+        const userTemplate = config.get<string>("use_define_template_directory") || "";
+        options.include_search_directory = appendSearchPath(userInclude, includeDir);
+        options.template_search_directory = appendSearchPath(userTemplate, templateDir);
+        const result = await generate(grammarPath, options, outputChannel);
+        publishGeneratorReport(Uri.file(grammarPath), result.report);
+        return { outDir, result };
+    }
+
+    export function getExtensionRoot(): string {
+        return extensionRoot();
+    }
+
     export function get_server_path(): string[]
     {
         let exeHome: string ;

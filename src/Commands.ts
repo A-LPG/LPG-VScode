@@ -53,4 +53,7 @@ export namespace Commands {
 
      
      export const LPG_FOLLOW_SET_ALL_RULE = 'lpg.fowllow.allRules'
+
+     /** Interactive Test Grammar panel (Java MVP). */
+     export const LPG_TEST_GRAMMAR = 'lpg.tools.testGrammar'
 }

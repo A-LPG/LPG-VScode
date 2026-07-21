@@ -8,6 +8,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Unreleased
 
+### 0.0.23
+* Add: **Test Grammar** panel (`lpg.tools.testGrammar`) — paste sample text, run Java lexer→parser, show token table + nested AST (`misc/parse-tree.js` + d3).
+* Add: Java testrig harness (`misc/java-testrig/LpgTestRig.java`) and `server/lib/lpg-runtime.jar` via `scripts/assemble-release.sh`.
+* Add: Setting `lpg.test.jdkHome` (optional JDK for `java`/`javac`).
+* Note: Requires `import_terminals=….gi` (real lexer). Forces `-automatic_ast=nested`. Dogfood: `grammars-example/ebnf_example/json/JsonParser.g`.
+
 ### 0.0.22
 * Add: Generator diagnostics in the Problems panel via `-diagnostics=json` on Generate and on save (`lpg.generation.setting.analyzeOnSave`, default on, uses `-nowrite`).
 * Add: Quick fixes on conflict/generator diagnostics — copy message, suggest `-list` for listing files.

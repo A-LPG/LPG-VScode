@@ -34,6 +34,7 @@ import { ProgressIndicator } from './ProgressIndicator';
 import { TextEditorEdit } from 'vscode';
 import { GetGenerationOptions, GetGenerationSettingOptions, get_server_path, makeOfflineBinariesExecutable, regenerateParser, analyzeGrammarDocument, setExtensionPath } from './GrammarGenerator';
 import { analyzeOnSaveEnabled, registerGeneratorDiagnostics } from './GeneratorDiagnostics';
+import { TestGrammarProvider } from './TestGrammarProvider';
 
 
 
@@ -427,6 +428,12 @@ export async function activate(context: vscode.ExtensionContext)
    (textEditor: TextEditor, edit: TextEditorEdit) => {
 		regenerateParser(textEditor.document,progress,outputChannel);
    }));
+   // Test Grammar does not need the language server; register even if LS fails to start.
+   const testGrammarProvider = new TestGrammarProvider(undefined, context, outputChannel);
+   context.subscriptions.push(commands.registerTextEditorCommand(Commands.LPG_TEST_GRAMMAR,
+	   (textEditor: TextEditor, _edit: TextEditorEdit) => {
+		   testGrammarProvider.showForEditor(textEditor);
+	   }));
    registerGeneratorDiagnostics(context.subscriptions);
 
    let analyzeTimer: ReturnType<typeof setTimeout> | undefined;

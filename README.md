@@ -44,7 +44,14 @@
 * Terminal and non-terminal  railroad graph for LPG grammars 
 >![Rule RailRoad](https://raw.githubusercontent.com/A-LPG/LPG-VScode/master/doc/img/railroad.png )
 
-* First set and follow set for LPG grammars 
+* First set and follow set for LPG grammars
+
+### Test Grammar (Java MVP)
+
+* Command **Test Grammar (Java)** (`lpg.tools.testGrammar`): paste sample input → token stream + nested AST webview.
+* Requires a grammar with `import_terminals=….gi` (real lexer) and a JDK (`java`/`javac` on PATH, or `lpg.test.jdkHome`).
+* Always generates with `-automatic_ast=nested` into `<grammarDir>/.lpg/test/` (cached by grammar mtime).
+* Dogfood: open [`JsonParser.g`](https://github.com/A-LPG/LPG2/blob/main/grammars-example/ebnf_example/json/JsonParser.g) (+ `JsonLexer.gi`), run the command, paste `{"a":1}`.
   
 ### Parser-generation
 
@@ -73,9 +80,10 @@ See the [Git issue tracker](https://github.com/A-LPG/LPG-VScode/issues).
 3. Confirm non-zero generator exits (including conflict fail-fast exit 12) show `showErrorMessage`.
 4. Confirm settings enum has no stub languages (`c` / `ml` / `plx` / `plxasm` / `xml`).
 5. Optional: smoke LSP hover/completion on a small `.g`.
+6. Smoke **Test Grammar** on `JsonParser.g` (needs JDK + assembled `server/lib/lpg-runtime.jar`).
 
 ## What's planned next?
 
-1. Interactive **Test Grammar** panel (sample input → tokens / parse tree).
-2. CodeLens reference counts + more lightbulb refactors.
+1. CodeLens reference counts + more lightbulb refactors.
+2. Multi-language Test Grammar / richer parse diagnostics.
 3. Marketplace / publish automation (needs operator PATs).
